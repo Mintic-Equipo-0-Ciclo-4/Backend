@@ -7,7 +7,7 @@ const httpServerError = (res, error) => {
 const httpBadRequestError = (res, error) => {
 	console.trace(error);
 	res.status(400);
-	res.send(error);
+	res.send({ error: error });
 };
 
 const httpConflictError = (res, conflictParam) => {
