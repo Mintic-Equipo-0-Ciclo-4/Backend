@@ -1,0 +1,21 @@
+{
+	"name": "Backend",
+	"version": "1.0.0",
+	"description": "Este es un proyecto de prueba para comprobar si puedo hacer las cosas de manera independiente :P",
+	"main": "index.js",
+	"dependencies": {
+		"cors": "^2.8.5",
+		"dotenv": "^10.0.0",
+		"express": "^4.17.1"
+	},
+	"devDependencies": {
+		"nodemon": "^2.0.14"
+	},
+	"scripts": {
+		"start": "node ./src/bin/www.js",
+		"test": "npx nodemon ./src/bin/www.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC"
+}
