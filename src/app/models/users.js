@@ -11,6 +11,7 @@ const userSchema = new Schema(
 	{
 		timestamps: true,
 		_id: true,
+		versionKey: false,
 	}
 );
 
