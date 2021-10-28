@@ -5,7 +5,7 @@ router.get("/", productsController.getItems);
 
 router.get("/:id", productsController.getItem);
 
-router.post("/", productsController.createItem);
+router.post("/", productsController.createItems);
 
 // router.patch("/", productsController.updateItem);
 

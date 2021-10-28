@@ -26,7 +26,7 @@ const createItem = async (req, res) => {
 	try {
 		const { cedula, nombre, email, username, password } = req.body;
 		const details = await userModel.create({ cedula, nombre, email, username, password });
-		res.sendStatus(200);
+		res.sendStatus(201);
 	} catch (e) {
 		if (e.code === 11000) {
 			httpConflictError(res, Object.keys(e.keyValue)[0]);
