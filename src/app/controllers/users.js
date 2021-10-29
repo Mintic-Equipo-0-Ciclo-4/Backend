@@ -1,4 +1,5 @@
 const userModel = require("../models/users");
+const bcrypt = require("bcrypt");
 const { httpServerError, httpBadRequestError, httpConflictError } = require("../helpers/httpError");
 
 const getItem = async (req, res) => {
@@ -25,7 +26,9 @@ const getItems = async (req, res) => {
 const createItem = async (req, res) => {
 	try {
 		const { cedula, nombre, email, username, password } = req.body;
-		const details = await userModel.create({ cedula, nombre, email, username, password });
+		const salt = await bcrypt.genSalt(8);
+		const hash = await bcrypt.hash(password, salt);
+		const details = await userModel.create({ cedula, nombre, email, username, password: hash });
 		res.sendStatus(201);
 	} catch (e) {
 		if (e.code === 11000) {
