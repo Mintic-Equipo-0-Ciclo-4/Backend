@@ -12,11 +12,14 @@ const createItem = async (req, res) => {
 	if (user) {
 		const check = await bcrypt.compare(password, user.password);
 		if (check) {
-			req.session.data = user;
-			res.sendStatus(201);
+			const { cedula, nombre, email, username } = user;
+			req.session.data = { cedula, nombre, email, username };
+			res.status(201);
+			res.send(null);
 		} else res.sendStatus(401);
 	} else {
-		res.sendStatus(404);
+		res.status(404);
+		res.send(null);
 	}
 };
 
