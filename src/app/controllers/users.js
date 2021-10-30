@@ -35,8 +35,7 @@ const createItem = async (req, res) => {
 			httpConflictError(res, Object.keys(e.keyValue)[0]);
 			return;
 		}
-
-		if (e.errors !== null) {
+		if (e.errors !== undefined) {
 			httpBadRequestError(res, Object.keys(e.errors));
 			return;
 		}
