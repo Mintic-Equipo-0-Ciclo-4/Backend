@@ -24,6 +24,7 @@ const createItem = async (req, res) => {
 };
 
 const deleteItem = (req, res) => {
+	res.clearCookie("connect.sid");
 	req.session.destroy();
 	res.sendStatus(200);
 };
