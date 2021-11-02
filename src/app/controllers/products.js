@@ -27,6 +27,7 @@ const createItems = async (req, res) => {
 		const { productos } = req.body;
 
 		for (producto of productos) {
+			console.log(producto);
 			let details = await productModel.create(producto);
 		}
 		res.sendStatus(201);
@@ -36,7 +37,7 @@ const createItems = async (req, res) => {
 			return;
 		}
 
-		if (e.errors !== null) {
+		if (e.errors !== undefined) {
 			console.log(e.errors);
 			httpBadRequestError(res, Object.keys(e.errors));
 			return;
