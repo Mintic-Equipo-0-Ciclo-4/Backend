@@ -1,14 +1,15 @@
 const router = require("express").Router();
 const usersController = require("../controllers/users");
+const auth = require("../middleware/auth");
 
-router.get("/", usersController.getItems);
+router.get("/", auth, usersController.getItems);
 
 router.get("/:id", usersController.getItem);
 
 router.post("/", usersController.createItem);
 
-router.patch("/", usersController.updateItem);
+router.patch("/", auth, usersController.updateItem);
 
-router.delete("/:id", usersController.deleteItem);
+router.delete("/:id", auth, usersController.deleteItem);
 
 module.exports = router;

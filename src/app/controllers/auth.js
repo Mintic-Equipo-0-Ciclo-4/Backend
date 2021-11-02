@@ -16,7 +16,7 @@ const createItem = async (req, res) => {
 			req.session.data = { cedula, nombre, email, username };
 			res.status(201);
 			res.send(null);
-		} else res.sendStatus(401);
+		} else res.sendStatus(403);
 	} else {
 		res.status(404);
 		res.send(null);
