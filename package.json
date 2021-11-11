@@ -16,7 +16,8 @@
 	},
 	"scripts": {
 		"start": "node ./src/bin/www.js",
-		"test": "npx nodemon ./src/bin/www.js"
+		"test": "npx nodemon ./src/bin/www.js",
+		"dev": "npx nodemon ./src/bin/www.js"
 	},
 	"keywords": [],
 	"author": "",

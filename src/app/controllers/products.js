@@ -27,7 +27,6 @@ const createItems = async (req, res) => {
 		const { productos } = req.body;
 
 		for (producto of productos) {
-			console.log(producto);
 			let details = await productModel.create(producto);
 		}
 		res.sendStatus(201);
