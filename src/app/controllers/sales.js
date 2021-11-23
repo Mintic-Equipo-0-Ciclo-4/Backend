@@ -1,10 +1,21 @@
-const productModel = require("../models/products");
+const saleModel = require("../models/sales");
 const { httpServerError, httpBadRequestError, httpConflictError } = require("../helpers/httpError");
 
 const getItem = async (req, res) => {
 	try {
 		const { id } = req.params;
-		const details = await productModel.findOne({ codigo: id });
+		const details = await saleModel.findOne({ consecutivo: id });
+		res.status(details !== null ? 200 : 404);
+		res.send(details);
+	} catch (e) {
+		httpServerError(req, e);
+	}
+};
+
+const getByClientItem = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const details = await saleModel.find({ cedula: id });
 		res.status(details !== null ? 200 : 404);
 		res.send(details);
 	} catch (e) {
@@ -14,21 +25,16 @@ const getItem = async (req, res) => {
 
 const getItems = async (req, res) => {
 	try {
-		const data = await productModel.find({});
+		const data = await saleModel.find({});
 		res.send(data);
 	} catch (e) {
 		httpServerError(res, e);
 	}
 };
 
-const createItems = async (req, res) => {
-	await deleteItems();
+const createItem = async (req, res) => {
 	try {
-		const { productos } = req.body;
-
-		for (producto of productos) {
-			let details = await productModel.create(producto);
-		}
+		let details = await saleModel.create(req.body);
 		res.sendStatus(201);
 	} catch (e) {
 		if (e.code === 11000) {
@@ -45,23 +51,13 @@ const createItems = async (req, res) => {
 	}
 };
 
-const deleteItem = async (req, res) => {
-	try {
-		const { id } = req.params;
-		const details = await productModel.findOneAndDelete({ codigo: id });
-		res.sendStatus(details !== null ? 200 : 404);
-	} catch (e) {
-		httpServerError(res, e);
-	}
-};
-
 const deleteItems = async (req, res) => {
 	try {
-		const details = await productModel.deleteMany({});
+		const details = await saleModel.deleteMany({});
 		if (res !== undefined) res.sendStatus(200);
 	} catch (e) {
 		httpServerError(res, e);
 	}
 };
 
-module.exports = { getItem, getItems, createItems, deleteItem, deleteItems };
+module.exports = { getItem, getItems, getByClientItem, createItem, deleteItems };
