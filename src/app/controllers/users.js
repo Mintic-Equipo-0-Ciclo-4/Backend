@@ -28,7 +28,14 @@ const createItem = async (req, res) => {
 		const requiredFields = ["cedula", "nombre", "email", "password", "username"];
 		const uniqueFields = ["cedula", "username", "email"];
 
-		const user = (({ cedula, email, nombre, username, password }) => ({ cedula, email, nombre, username, password }))(req.body);
+		const user = (({ cedula, email, nombre, username, password, sucursal }) => ({
+			cedula,
+			email,
+			nombre,
+			username,
+			password,
+			sucursal,
+		}))(req.body);
 		const salt = await bcrypt.genSalt(8);
 		user.password = await bcrypt.hash(user.password, salt);
 
