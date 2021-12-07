@@ -1,5 +1,5 @@
 const clientModel = require("../models/clients");
-const { httpServerError, httpBadRequestError, httpConflictError } = require("../helpers/httpError");
+const { httpServerError } = require("../helpers/httpError");
 const { verifyRequired, verifyUnique } = require("../helpers/databaseSecurity");
 
 const getItem = async (req, res) => {
@@ -48,7 +48,8 @@ const updateItem = async (req, res) => {
 			req.body
 		);
 
-		const errorResponse = verifyRequired(client, requiredFields) || (await verifyUnique(client, uniqueFields, clientModel));
+		const errorResponse =
+			verifyRequired(client, requiredFields) || (await verifyUnique(client, uniqueFields, clientModel, "cedula"));
 		if (errorResponse) return res.status(errorResponse.status).send(errorResponse);
 
 		const updated = await clientModel.updateOne({ cedula: client.cedula }, { ...client });

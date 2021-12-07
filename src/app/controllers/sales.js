@@ -1,10 +1,12 @@
 const saleModel = require("../models/sales");
 const { httpServerError, httpBadRequestError, httpConflictError } = require("../helpers/httpError");
 
+//TODO: Corregir esto :P
+
 const getItem = async (req, res) => {
 	try {
-		const { id } = req.params;
-		const details = await saleModel.findOne({ consecutivo: id });
+		const { id: consecutivo } = req.params;
+		const details = await saleModel.findOne({ consecutivo });
 		res.status(details !== null ? 200 : 404);
 		res.send(details);
 	} catch (e) {
@@ -14,8 +16,8 @@ const getItem = async (req, res) => {
 
 const getByClientItem = async (req, res) => {
 	try {
-		const { id } = req.params;
-		const details = await saleModel.find({ cedula: id });
+		const { id: cedula } = req.params;
+		const details = await saleModel.find({ cedula });
 		res.status(details !== null ? 200 : 404);
 		res.send(details);
 	} catch (e) {

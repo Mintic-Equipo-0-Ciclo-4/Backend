@@ -1,14 +1,14 @@
 const userModel = require("../models/users");
 const bcrypt = require("bcrypt");
-const { httpServerError, httpBadRequestError, httpConflictError } = require("../helpers/httpError");
+const { httpServerError } = require("../helpers/httpError");
+const { verifyRequired, verifyUnique } = require("../helpers/databaseSecurity");
 
 const getItem = async (req, res) => {
 	try {
-		const { id } = req.params;
-		const data = await userModel.findOne({ cedula: id });
+		const { id: cedula } = req.params;
+		const user = await userModel.findOne({ cedula });
 
-		res.status(data !== null ? 200 : 404);
-		res.send(data);
+		res.status(user !== null ? 200 : 404).send(user);
 	} catch (e) {
 		httpServerError(res, e);
 	}
@@ -16,8 +16,8 @@ const getItem = async (req, res) => {
 
 const getItems = async (req, res) => {
 	try {
-		const data = await userModel.find({});
-		res.send(data);
+		const users = await userModel.find({});
+		res.send(users);
 	} catch (e) {
 		httpServerError(res, e);
 	}
@@ -25,45 +25,46 @@ const getItems = async (req, res) => {
 
 const createItem = async (req, res) => {
 	try {
-		const { cedula, nombre, email, username, password } = req.body;
+		const requiredFields = ["cedula", "nombre", "email", "password", "username"];
+		const uniqueFields = ["cedula", "username", "email"];
+
+		const user = (({ cedula, email, nombre, username, password }) => ({ cedula, email, nombre, username, password }))(req.body);
 		const salt = await bcrypt.genSalt(8);
-		const hash = await bcrypt.hash(password, salt);
-		const details = await userModel.create({ cedula, nombre, email, username, password: hash });
+		user.password = await bcrypt.hash(user.password, salt);
+
+		const errorResponse = verifyRequired(user, requiredFields) || (await verifyUnique(user, uniqueFields, userModel));
+		if (errorResponse) return res.status(errorResponse.status).send(errorResponse);
+
+		const created = userModel.create(user);
 		res.sendStatus(201);
 	} catch (e) {
-		if (e.code === 11000) {
-			httpConflictError(res, Object.keys(e.keyValue)[0]);
-			return;
-		}
-		if (e.errors !== undefined) {
-			httpBadRequestError(res, Object.keys(e.errors));
-			return;
-		}
 		httpServerError(res, e);
 	}
 };
 
 const updateItem = async (req, res) => {
 	try {
-		const { cedula, nombre, email, username, password } = req.body;
-		const details = await userModel.findOneAndUpdate({ cedula }, { cedula, nombre, email, username, password });
+		const requiredFields = ["cedula"];
+		const uniqueFields = ["username", "email"];
+		const user = (({ cedula, email, nombre, username }) => ({ cedula, email, nombre, username }))(req.body);
 
-		res.sendStatus(details !== null ? 200 : 404);
+		const errorResponse = verifyRequired(user, requiredFields) || (await verifyUnique(user, uniqueFields, userModel));
+		if (errorResponse) return res.status(errorResponse.status).send(errorResponse);
+
+		const updated = await userModel.updateOne({ cedula: user.cedula }, { ...user });
+
+		res.sendStatus(updated !== null ? 200 : 404);
 	} catch (e) {
-		if (e.code === 11000) {
-			httpConflictError(res, Object.keys(e.keyValue)[0]);
-			return;
-		}
 		httpServerError(res, e);
 	}
 };
 
 const deleteItem = async (req, res) => {
 	try {
-		const { id } = req.params;
-		const details = await userModel.findOneAndDelete({ cedula: id });
+		const { id: cedula } = req.params;
+		const deleted = await userModel.findOneAndDelete({ cedula });
 
-		res.sendStatus(details !== null ? 200 : 404);
+		res.sendStatus(deleted !== null ? 200 : 404);
 	} catch (e) {
 		httpServerError(res, e);
 	}
