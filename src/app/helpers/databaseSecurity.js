@@ -7,9 +7,9 @@ const verifyRequired = (data, fields) => {
 const verifyUnique = async (data, fields, model, id = null) => {
 	for (let field of fields) {
 		let conflict = await model.findOne({
-			$and: [{ [field]: { $regex: String(data[field]), $options: "i" } }, { [id]: { $ne: data[id] } }],
+			$and: [{ [field]: { $regex: "^" + String(data[field]) + "$", $options: "i" } }, { [id]: { $ne: data[id] } }],
 		});
-		console.log(`Da error si ${field} == ${data[field]} y si ${id} != ${data[id]}`);
+		// console.log(`Da error si ${field} == ${data[field]} y si ${id} != ${data[id]}: `, conflict);
 		if (conflict) return { message: `Field ${field} already exists`, conflictParam: field, status: 409 };
 	}
 };

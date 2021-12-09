@@ -55,7 +55,7 @@ const updateItem = async (req, res) => {
 		const uniqueFields = ["username", "email"];
 		const user = (({ cedula, email, nombre, username }) => ({ cedula, email, nombre, username }))(req.body);
 
-		const errorResponse = verifyRequired(user, requiredFields) || (await verifyUnique(user, uniqueFields, userModel));
+		const errorResponse = verifyRequired(user, requiredFields) || (await verifyUnique(user, uniqueFields, userModel, "cedula"));
 		if (errorResponse) return res.status(errorResponse.status).send(errorResponse);
 
 		const updated = await userModel.updateOne({ cedula: user.cedula }, { ...user });

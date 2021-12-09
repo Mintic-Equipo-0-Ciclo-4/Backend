@@ -36,7 +36,17 @@ const getItems = async (req, res) => {
 
 const createItem = async (req, res) => {
 	try {
-		let details = await saleModel.create(req.body);
+		console.log("Usuario", req.session.data);
+		let sale = (({ consecutivo, subtotal, totalIva, total, productos, cedula }) => ({
+			consecutivo,
+			sucursal: req.session.data.sucursal,
+			subtotal,
+			totalIva,
+			total,
+			productos,
+			cedula,
+		}))(req.body);
+		let details = await saleModel.create(sale);
 		res.sendStatus(201);
 	} catch (e) {
 		if (e.code === 11000) {
@@ -45,7 +55,6 @@ const createItem = async (req, res) => {
 		}
 
 		if (e.errors !== undefined) {
-			console.log(e.errors);
 			httpBadRequestError(res, Object.keys(e.errors));
 			return;
 		}
